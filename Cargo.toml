@@ -1,0 +1,11 @@
+[package]
+name = "vv"
+version = "0.1.0"
+edition = "2024"
+authors = ["Atlas Dostal <email@atlasdostal.com>"]
+repository = "https://github.com/atlv24/vv"
+keywords = ["vec", "jagged", "storage", "array", "allocator"]
+categories = ["data-structures", "memory-management", "caching"]
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "A memory-contiguous `Vec<Vec<T>>` with resizable inner vecs."
