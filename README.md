@@ -10,7 +10,7 @@ Add it to your Cargo.toml:
 
 ```toml
 [dependencies]
-vv = "0.1"
+vv = "0.2"
 ```
 
 # Example

@@ -65,7 +65,7 @@ impl<T> Vv<T> {
     /// Pushes a vec to the `Vv`.
     #[inline(always)]
     pub fn push(&mut self, iter: impl IntoIterator<Item = T>) -> usize {
-        let mut iter = iter.into_iter();
+        let iter = iter.into_iter();
         self.count = self.count.wrapping_add(1);
         let mut prev = self.runs.len().wrapping_sub(1);
         while self.runs.get(prev).is_some_and(|r| r.is_dead()) {
@@ -73,7 +73,7 @@ impl<T> Vv<T> {
         }
         let start = self.runs.get(prev).map_or_else(|| 0, |r| r.end());
         let mut index = start;
-        while let Some(t) = iter.next() {
+        for t in iter {
             if index < self.data.len() {
                 self.data[index] = t;
             } else {
@@ -110,6 +110,12 @@ impl<T> Vv<T> {
     #[inline(always)]
     pub fn len(&self) -> usize {
         self.count
+    }
+
+    /// Is the `Vv` empty?
+    #[inline(always)]
+    pub fn is_empty(&self) -> bool {
+        self.count > 0
     }
 
     /// Immutably borrows the vec at `index` as a slice, if it exists.
@@ -165,8 +171,7 @@ impl<T> Vv<T> {
                 next = next.wrapping_add(1);
             }
             let new_end = run.end().wrapping_add(1);
-            // self.runs.get(next).is_none_or(|r| new_end < r.start())
-            if !self.runs.get(next).is_some_and(|r| !(new_end < r.start())) {
+            if self.runs.get(next).is_none_or(|r| new_end < r.start()) {
                 let new_start = run.start().wrapping_add(insert);
                 if new_end > self.data.len() {
                     self.data.push(t);
@@ -382,7 +387,7 @@ where
 {
     fn clone(&self) -> Self {
         Self {
-            count: self.count.clone(),
+            count: self.count,
             data: self.data.clone(),
             runs: self.runs.clone(),
         }
