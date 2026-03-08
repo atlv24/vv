@@ -21,10 +21,10 @@ use vv::Vv;
 let mut vv = Vv::<i32>::new();
 let first = vv.push([1, 2, 3]);
 let second = vv.push([7, 8, 9]);
-vv.get_mut(first).rotate_right();
+vv.get_mut(first).unwrap().rotate_right(1);
 let first = vv.insert(first, 0, 1);
 
-assert_eq!(vv.get(first), [1, 3, 1, 2]);
+assert_eq!(vv.get(first).unwrap(), [1, 3, 1, 2]);
 ```
 
 ## License

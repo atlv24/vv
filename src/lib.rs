@@ -115,13 +115,13 @@ impl<T> Vv<T> {
     /// Is the `Vv` empty?
     #[inline(always)]
     pub fn is_empty(&self) -> bool {
-        self.count > 0
+        self.count == 0
     }
 
     /// Immutably borrows the vec at `index` as a slice, if it exists.
     #[inline(always)]
     pub fn get(&self, index: usize) -> Option<&[T]> {
-        let run = self.runs[index];
+        let run = *self.runs.get(index)?;
         if run.is_dead() {
             None
         } else {
@@ -132,7 +132,7 @@ impl<T> Vv<T> {
     /// Mutably borrows the vec at `index` as a slice, if it exists.
     #[inline(always)]
     pub fn get_mut(&mut self, index: usize) -> Option<&mut [T]> {
-        let run = self.runs[index];
+        let run = *self.runs.get(index)?;
         if run.is_dead() {
             None
         } else {
@@ -318,8 +318,10 @@ impl<T> Vv<T> {
                 continue;
             }
             self.runs[rcursor] = self.runs[r];
+            self.runs[rcursor].start = dcursor as u32;
             rcursor += 1;
             if skip {
+                dcursor += run.len as usize;
                 continue;
             }
             for d in run.range() {
@@ -348,8 +350,10 @@ impl<T> Vv<T> {
                 continue;
             }
             self.runs[rcursor] = self.runs[r];
+            self.runs[rcursor].start = dcursor as u32;
             rcursor += 1;
             if skip {
+                dcursor += run.len as usize;
                 continue;
             }
             for d in run.range() {
@@ -686,13 +690,3 @@ mod test {
         assert_eq!(vv.data[3..5], [5, 1]);
     }
 }
-
-//get
-//get_mut
-//compact
-//compact2
-//iter
-//default
-//clone
-//into_iter
-//next
